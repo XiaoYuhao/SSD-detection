@@ -1,0 +1,9 @@
+#weigths
+*.pth
+
+#data
+/temp
+/dataset
+
+#log
+*.log

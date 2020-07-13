@@ -1008,15 +1008,8 @@ def eval_map(det_results, annotations, iou_thr=0.5, nproc=4):
         if cls_result['num_gts'] > 0:
             aps.append(cls_result['ap'])
     mean_ap = np.array(aps).mean().item() if aps else 0.0
-    for i, ap in enumerate(aps):
-        print("%s:%f" %(labels[i],ap))
 
-    print(mean_ap)
     return mean_ap, eval_results
-
-
-
-
 
 def get_cls_results(det_results, annotations, class_id):
     '''
@@ -1151,3 +1144,28 @@ def average_precisions(recalls, precisions, mode='area'):
         ap[0] /= 11
     return ap[0]
 
+def show_mAP_table(eval_results, mAP):
+    label_len = len('classes')
+    dets_len = len('dets')
+    gts_len = len('gts')
+    for i, res in enumerate(eval_results):
+        label_len = max(len(labels[i]), label_len)
+        dets_len = max(len(str(res['num_dets'])), dets_len)
+        gts_len = max(len(str(res['num_gts'])), gts_len)
+    s1 = '+' + (label_len+2)*'-' + '+' + (dets_len+2)*'-' + '+' + (gts_len+2)*'-' + '+' + 7*'-' + '+'
+    header = '| classes' + (label_len-6)*' ' + '|' + ' dets' + (dets_len-3)*' ' + '|' + ' gts' + (gts_len-2)*' ' + '|' +'  mAP  ' + '|'
+    print(s1)
+    print(header)
+    print(s1)
+    for i ,res in enumerate(eval_results):
+        l_len = len(labels[i])
+        d_len = len(str(res['num_dets']))
+        g_len = len(str(res['num_gts']))
+        ap = "{:.3f}".format(res['ap'])
+        content = '| ' + labels[i] + (label_len-l_len+1)*' ' + '| ' + str(res['num_dets']) + (dets_len-d_len+1)*' ' + '| ' + str(res['num_gts']) + (gts_len-g_len+1)*' ' + '| ' + str(ap) + ' |'
+        print(content)
+    print(s1)
+    mAP = "{:.3f}".format(mAP)
+    content = '| mAP' + (label_len-2)*' ' + '|' + (dets_len+2)*' ' + '|' + (gts_len+2)*' ' + '| ' + str(mAP) + ' |'
+    print(content)
+    print(s1)

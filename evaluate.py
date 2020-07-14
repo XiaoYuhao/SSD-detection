@@ -43,7 +43,7 @@ def evaluate():
             predicted_locs, predicted_scores = model(images)
             
             #det_boxes_batch, det_labels_batch, det_scores_batch = detector(priors_cxcy=model.priors, predicted_locs=predicted_locs, predicted_scores=predicted_scores, min_score=0.01, max_overlap=0.45, top_k=200, n_classes=len(label_map))
-            results = detector(model.priors, predicted_locs, predicted_scores, 0.10, 0.45, 200)
+            results = detector(model.priors, predicted_locs, predicted_scores, 0.02, 0.45, 200)
             #print(results)
             bbox_results.extend([bbox2result(det_bboxes, det_labels, 7) for det_bboxes, det_labels in results])
             #print(bbox_results)
@@ -65,4 +65,5 @@ def evaluate():
 
 if __name__ == '__main__':
     evaluate()
+    
 

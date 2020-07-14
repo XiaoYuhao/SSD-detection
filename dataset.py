@@ -87,7 +87,7 @@ def create_data_lists(data_path, output_folder):
     
     print('\nThere are %d validation images containing a total of %d objects. Files have been saved to %s.' %(len(test_images), n_objects, os.path.abspath(output_folder)))
 
-class SeaShipsDataset(Dataset):
+class Dataset(Dataset):
     def __init__(self, data_folder, split, keep_difficult=False):
         self.split = split.upper()
         assert self.split in {'TRAIN', 'TEST'}
@@ -137,3 +137,8 @@ class SeaShipsDataset(Dataset):
         images = torch.stack(images, dim=0)
 
         return images, boxes, labels, difficulties
+
+
+#data_path = '../coco/data/SeaShips/VOCdevkit/VOC2007'
+#create_data_lists(data_path, output_folder=data_folder)
+#data_folder = 'dataset'

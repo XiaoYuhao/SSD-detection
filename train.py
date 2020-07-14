@@ -8,13 +8,11 @@ from SSD import SSD
 from SSDLite import SSDLite
 import argparse
 from logger import getLogger
+print(configs)
 
-#from dataset import *
+from dataset import Dataset
 
-#from voc0712 import PascalVOCDataset
-from dataset import SeaShipsDataset
-
-logger = getLogger(log_name='ssdlite_params_v1_seaship')            #加载日志器
+logger = getLogger(log_name=configs['log_name'])            #加载日志器
 
 def train(train_loader, model, criterion, optimizer, epoch, grad_clip):
     print_freq = 200
@@ -115,26 +113,33 @@ def main():
     logger.debug(n_classes)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    checkpoint = None
-    batch_size = 20
-    start_epoch = 0                #开始的epoch
-    epochs = 100                     #本次训练的epoch
-    epochs_since_improvement = 0
-    best_loss = 100.
-    num_workers = 4
-    lr = 0.002
-    momentum = 0.9
-    weight_decay = 0.0005
-    grad_clip = None
-    backbone = 'MobileNetV1'
-    best_save = 'ssdlite_params_v1_seaship_best.pth'
-    save_model = 'ssdlite_params_v1_seaships.pth'
+    checkpoint = configs['checkpoint']
+    batch_size = configs['batch_size']
+    start_epoch = configs['start_epoch']               #开始的epoch
+    epochs = configs['epochs']                           #本次训练的epoch
+    epochs_since_improvement = configs['epochs_since_improvement'] 
+    best_loss = configs['best_loss']
+    num_workers = configs['num_workers']
+    lr = configs['lr']
+    momentum = configs['momentum']
+    weight_decay = configs['weight_decay']
+    grad_clip = configs['grad_clip']
+    backbone = configs['backbone']
+    best_save = configs['best_model']
+    save_model = configs['save_model']
     
-    #model = SSD(class_num=n_classes, backbone=backbone, device=device)
-    model = SSDLite(class_num=n_classes, backbone=backbone, device=device)
+    model = SSD(class_num=n_classes, backbone=backbone, device=device)
+    #model = SSDLite(class_num=n_classes, backbone=backbone, device=device)
     if checkpoint is not None:
         model = load_pretrained(model, checkpoint)        #加载预训练模型
 
+    data_folder = configs['data_folder']
+
+    val_dataset = Dataset(data_folder, split='test', keep_difficult=keep_difficult)
+    train_dataset = Dataset(data_folder, split='train', keep_difficult=keep_difficult)
+
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=train_dataset.collate_fn, num_workers=num_workers, pin_memory=True)
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, collate_fn=val_dataset.collate_fn, num_workers=num_workers, pin_memory=True)
 
     biases = list()
     not_biases = list()
@@ -153,18 +158,6 @@ def main():
     
     model = model.to(device)
     criterion = MultiBoxLoss(priors_cxcy=model.priors).to(device)
-
-
-    #data_path = '../coco/data/SeaShips/VOCdevkit/VOC2007'
-    #create_data_lists(data_path, output_folder=data_folder)
-    #data_folder = 'dataset'
-    data_folder = 'dataset/SeaShips'
-
-    val_dataset = SeaShipsDataset(data_folder, split='test', keep_difficult=keep_difficult)
-    train_dataset = SeaShipsDataset(data_folder, split='train', keep_difficult=keep_difficult)
-
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=train_dataset.collate_fn, num_workers=num_workers, pin_memory=True)
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, collate_fn=val_dataset.collate_fn, num_workers=num_workers, pin_memory=True)
 
     print(start_epoch)
     logger.debug(start_epoch)

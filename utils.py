@@ -5,6 +5,7 @@ import random
 import xml.etree.ElementTree as ET
 import torch.nn.functional as F
 import torchvision.transforms.functional as FT
+
 from config import *
 import numpy as np
 
@@ -510,6 +511,7 @@ def resize(image, boxes, dims=(300, 300), return_percent_coords=True):
     new_image = FT.resize(image, dims)
 
     # Resize bounding boxes
+    # 这里把bboxes都缩放到了[0,1]的范围中去
     old_dims = torch.FloatTensor([image.width, image.height, image.width, image.height]).unsqueeze(0)
     new_boxes = boxes / old_dims  # percent coordinates
 
@@ -839,12 +841,9 @@ def get_bboxes_single(anchors, predicted_locs, predicted_scores, min_score, max_
         predicted_scores: [8732, num_classes]
     '''
     assert anchors.size(0) == predicted_locs.size(0) == predicted_scores.size(0)
-    mlvl_bboxes = []
-    mlvl_scores = []
 
     scores = predicted_scores.softmax(-1)
-    max_scores, _ = scores[:, 1:].max(dim=1)            #把背景类别的分数去掉
-    #max_scores, _ = scores.max(dim=1)
+    max_scores, _ = scores[:, 1:].max(dim=1)            #把背景类别的分数去掉，这里的0代表背景
     _, topk_inds = max_scores.topk(top_k)
 
     anchors = anchors[topk_inds, :]
@@ -852,12 +851,8 @@ def get_bboxes_single(anchors, predicted_locs, predicted_scores, min_score, max_
     scores = scores[topk_inds, :]
 
     bboxes = cxcy_to_xy(gcxgcy_to_cxcy(predicted_locs, anchors))       #decode
-    mlvl_bboxes.append(bboxes)
-    mlvl_scores.append(scores)
-    mlvl_bboxes = torch.cat(mlvl_bboxes)
-    mlvl_scores = torch.cat(mlvl_scores)
 
-    det_bboxes, det_labels = multiclass_nms(mlvl_bboxes, mlvl_scores, min_score, max_overlap)
+    det_bboxes, det_labels = multiclass_nms(bboxes, scores, min_score, max_overlap)
     det_labels = det_labels + 1                         #因为之前把背景类别去掉了，要把类别+1才是真正的类别
     return det_bboxes, det_labels
 
@@ -896,6 +891,7 @@ def batch_nms(bboxes, scores, inds, threshold):
         bboxes: [n, 4]
         scores: [n]
     '''
+    #将不同类别的预测框平移到互不干扰的区域，这样才能在同类预测框之间进行非极大性抑制
     max_coordinate = bboxes.max()
     offset = inds.to(bboxes) * (max_coordinate + 1)
     bboxes_for_nms = bboxes + offset[:, None]
@@ -952,8 +948,12 @@ from multiprocessing import Pool
 def eval_map(det_results, annotations, iou_thr=0.5, nproc=4):
     '''
     Params:
-        det_results(List[List]): [[cls1_det, cls2_det, ...], ...].
-        annotations(List[dict]):
+        det_results(List[List]): [[cls1_det, cls2_det, ...], ...].      #包含每一张图片每一个类别的预测结果
+        annotations(List[dict]):                                        #包含每一张图片的数据标注
+            dict = {
+                'bboxes':(ndarray) shape(n,4)
+                'labels':(ndarray) shape(n)
+            }
     '''
     assert len(det_results) == len(annotations)
     
@@ -970,21 +970,13 @@ def eval_map(det_results, annotations, iou_thr=0.5, nproc=4):
             get_tpfp, zip(cls_dets, cls_gts, [iou_thr for _ in range(num_imgs)])
         )
         tp,fp = tuple(zip(*tpfp))
-        '''
-        tp = list()
-        fp = list()
-        for a,b in zip(cls_dets, cls_gts):
-            t, f = get_tpfp(a,b)
-            tp.append(t)
-            fp.append(f)
-        '''
         num_gts = np.zeros(num_scales, dtype=int)
         for j, bbox in enumerate(cls_gts):
             num_gts[0] += bbox.shape[0]
         cls_dets = np.vstack(cls_dets)
         num_dets = cls_dets.shape[0]
         sort_inds = np.argsort(-cls_dets[:, -1])
-        tp = np.hstack(tp)[sort_inds]               #按分数从小到大排序
+        tp = np.hstack(tp)[sort_inds]               #按分数从大到小排序
         fp = np.hstack(fp)[sort_inds]
 
         tp = np.cumsum(tp)                          #数组累加
@@ -1029,7 +1021,7 @@ def get_cls_results(det_results, annotations, class_id):
 def get_tpfp(det_bboxes, gt_bboxes, iou_thr=0.5):           #每一张图片的tpfp
     '''
     Params:
-        det_bboxes(ndarray): shape(m,5)
+        det_bboxes(ndarray): shape(m,5)                     #前4个是坐标，最后1个是分数
         gt_bboxes(ndarray): shape(n,4)
     '''
     num_dets = det_bboxes.shape[0]

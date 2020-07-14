@@ -3091,3 +3091,43 @@ Epoch: [35][800/828]	Batch Time 0.191 (0.270)	Data Time 0.000 (0.111)	Loss 4.568
 [0/126]	Batch Time 0.631 (0.631)	Loss 3.9072 (3.9072)	
 2020-07-14 14:51:41,979 logger DEBUG Epoch: [36][0/828]	Batch Time 1.602 (1.602)	Data Time 1.409 (1.409)	Loss 4.5892 (4.5892)	
 2020-07-14 14:52:05,640 logger DEBUG Epoch: [37][600/828]	Batch Time 0.260 (0.267)	Data Time 0.001 (0.017)	Loss 5.0863 (4.1211)	
+2020-07-14 14:52:12,640 logger DEBUG Epoch: [35][800/828]	Batch Time 0.204 (0.268)	Data Time 0.000 (0.090)	Loss 4.0022 (4.2864)	
+Epoch: [35][0/828]	Batch Time 1.615 (1.615)	Data Time 1.380 (1.380)	Loss 4.2733 (4.2733)	
+Epoch: [35][200/828]	Batch Time 0.740 (0.271)	Data Time 0.545 (0.088)	Loss 4.4803 (4.2908)	
+Epoch: [35][400/828]	Batch Time 0.496 (0.270)	Data Time 0.338 (0.090)	Loss 4.1873 (4.2943)	
+Epoch: [35][600/828]	Batch Time 0.161 (0.267)	Data Time 0.000 (0.087)	Loss 3.7090 (4.2884)	
+Epoch: [35][800/828]	Batch Time 0.204 (0.268)	Data Time 0.000 (0.090)	Loss 4.0022 (4.2864)	
+2020-07-14 14:52:20,297 logger DEBUG [0/126]	Batch Time 0.717 (0.717)	Loss 4.2046 (4.2046)	
+2020-07-14 14:52:20,297 logger DEBUG 
+ * Loss - 4.205
+
+2020-07-14 14:52:20,457 logger DEBUG 
+Epochs since last improvment: 6
+
+[0/126]	Batch Time 0.717 (0.717)	Loss 4.2046 (4.2046)	
+
+Epochs since last improvment: 6
+
+2020-07-14 14:52:22,006 logger DEBUG Epoch: [36][0/828]	Batch Time 1.546 (1.546)	Data Time 1.312 (1.312)	Loss 3.6164 (3.6164)	
+2020-07-14 14:52:24,849 logger DEBUG Epoch: [35][600/828]	Batch Time 0.268 (0.277)	Data Time 0.000 (0.004)	Loss 3.9285 (4.1648)	
+2020-07-14 14:52:34,255 logger DEBUG Epoch: [36][200/828]	Batch Time 0.292 (0.268)	Data Time 0.117 (0.113)	Loss 4.2319 (4.6204)	
+2020-07-14 14:52:58,016 logger DEBUG Epoch: [37][800/828]	Batch Time 0.275 (0.266)	Data Time 0.000 (0.014)	Loss 4.3272 (4.1240)	
+Epoch: [37][0/828]	Batch Time 1.386 (1.386)	Data Time 1.215 (1.215)	Loss 3.8854 (3.8854)	
+Epoch: [37][200/828]	Batch Time 0.246 (0.269)	Data Time 0.000 (0.028)	Loss 4.0707 (4.1475)	
+Epoch: [37][400/828]	Batch Time 0.291 (0.266)	Data Time 0.000 (0.017)	Loss 3.8447 (4.1289)	
+Epoch: [37][600/828]	Batch Time 0.260 (0.267)	Data Time 0.001 (0.017)	Loss 5.0863 (4.1211)	
+Epoch: [37][800/828]	Batch Time 0.275 (0.266)	Data Time 0.000 (0.014)	Loss 4.3272 (4.1240)	
+2020-07-14 14:53:05,868 logger DEBUG [0/126]	Batch Time 0.726 (0.726)	Loss 3.9838 (3.9838)	
+2020-07-14 14:53:05,869 logger DEBUG 
+ * Loss - 3.984
+
+2020-07-14 14:53:06,050 logger DEBUG 
+Epochs since last improvment: 1
+
+[0/126]	Batch Time 0.726 (0.726)	Loss 3.9838 (3.9838)	
+
+Epochs since last improvment: 1
+
+2020-07-14 14:53:07,517 logger DEBUG Epoch: [38][0/828]	Batch Time 1.465 (1.465)	Data Time 1.198 (1.198)	Loss 4.0765 (4.0765)	
+2020-07-14 14:53:15,309 logger DEBUG Epoch: [36][200/828]	Batch Time 0.171 (0.273)	Data Time 0.000 (0.090)	Loss 4.0632 (4.2743)	
+2020-07-14 14:53:18,417 logger DEBUG Epoch: [35][800/828]	Batch Time 0.271 (0.275)	Data Time 0.000 (0.004)	Loss 4.4640 (4.1558)	

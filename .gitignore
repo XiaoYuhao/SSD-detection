@@ -7,3 +7,6 @@
 
 #log
 *.log
+
+#nohup.out
+nohup.out

@@ -1,8 +1,8 @@
 
 # Label map
-voc_labels = ('aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'diningtable',
+labels = ('aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'diningtable',
               'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor')
-label_map = {k: v + 1 for v, k in enumerate(voc_labels)}
+label_map = {k: v + 1 for v, k in enumerate(labels)}
 label_map['background'] = 0
 rev_label_map = {v: k for k, v in label_map.items()}  # Inverse mapping
 
@@ -41,4 +41,10 @@ configs = dict(
     best_model = 'ssd300_v3_large_voc_best.pth',
     save_model = 'ssd300_v3_large_voc.pth',
     data_folder = 'dataset/voc',
+)
+
+test_configs = dict(
+    checkpoint = 'ssd300_v1_voc_best.pth',
+    backbone = 'MobileNetV1',
+    data_folder = 'dataset/voc'
 )

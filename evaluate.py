@@ -8,30 +8,32 @@ from SSD import SSD
 import time
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cpu")
 
-#from voc0712 import PascalVOCDataset
-from dataset import SeaShipsDataset
+from dataset import Dataset
 from tqdm import tqdm
 
 def evaluate():
-    backbone = 'VGG'
-    model = SSD(class_num=7, backbone=backbone, device=device)
-    model = load_pretrained(model, 'weights/ssd300_params_vgg_seaship_best.pth')
+    print(device)
+    backbone = test_configs['backbone']
+    model = SSD(class_num=len(label_map), backbone=backbone, device=device)
+    model = load_pretrained(model, test_configs['checkpoint'], device=device)
 
     #checkpoint = torch.load('checkpoint_ssd300.pth.tar')
     #model = checkpoint['model']
     model = model.to(device)
     model.eval()
     
-    data_folder = 'dataset/SeaShips'
+    data_folder = test_configs['data_folder']
     keep_difficult = True
     batch_size = 2
     workers = 4
-    test_dataset = SeaShipsDataset(data_folder,
+    pin_memory = False if device == torch.device('cpu') else True
+    test_dataset = Dataset(data_folder,
                                 split='test',
                                 keep_difficult=keep_difficult)
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False,
-                                          collate_fn=test_dataset.collate_fn, num_workers=workers, pin_memory=True)
+                                          collate_fn=test_dataset.collate_fn, num_workers=workers, pin_memory=pin_memory)
 
     annotations = list()
     bbox_results = list()
@@ -45,7 +47,7 @@ def evaluate():
             #det_boxes_batch, det_labels_batch, det_scores_batch = detector(priors_cxcy=model.priors, predicted_locs=predicted_locs, predicted_scores=predicted_scores, min_score=0.01, max_overlap=0.45, top_k=200, n_classes=len(label_map))
             results = detector(model.priors, predicted_locs, predicted_scores, 0.02, 0.45, 200)
             #print(results)
-            bbox_results.extend([bbox2result(det_bboxes, det_labels, 7) for det_bboxes, det_labels in results])
+            bbox_results.extend([bbox2result(det_bboxes, det_labels, len(label_map)) for det_bboxes, det_labels in results])
             #print(bbox_results)
 
             #boxes = [b.to(device) for b in boxes]

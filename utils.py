@@ -807,8 +807,11 @@ def detect_objects(priors_cxcy, predicted_locs, predicted_scores, min_score, max
         return all_images_boxes, all_images_labels, all_images_scores  # lists of length batch_size
 
 
-def load_pretrained(model, pretrained_path):
-    pretrained_dict = torch.load(pretrained_path)
+def load_pretrained(model, pretrained_path, device):
+    if device == torch.device('cpu'):
+        pretrained_dict = torch.load(pretrained_path, map_location='cpu')
+    else:
+        pretrained_dict = torch.load(pretrained_path)
     model_dict = model.state_dict()
     for k, v in model_dict.items():
         if v.shape == pretrained_dict[k].shape:

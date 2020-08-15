@@ -6,18 +6,25 @@ from priors import *
 import torch.nn.functional as F
 from utils import detect_objects
 from SSD import SSD
+from SSD512 import SSD512
+from SSDLite import SSDLite
 from config import *
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-n_classes = 7
+n_classes = len(label_map)
 
 def detect(img_path):
     original_image = Image.open(img_path, mode='r').convert('RGB')
-    model = SSD(class_num=n_classes, backbone='VGG', device=device)
-    model = load_pretrained(model, 'ssd300_params_vgg_seaship_best.pth')
+    if test_configs['net'] == 'SSD':
+        model = SSD(class_num=n_classes, backbone='VGG', device=device)
+    elif test_configs['net'] == 'SSD512':
+        model = SSD512(class_num=n_classes, backbone='VGG', device=device)
+    elif test_configs['net'] == 'SSDLite':
+        model = SSDLite(class_num=n_classes, backbone='VGG', device=device)
+    model = load_pretrained(model, test_configs['checkpoint'], device=device)
     model.to(device)
 
-    resize = transforms.Resize((300, 300))
+    resize = transforms.Resize(test_configs['resize'])
     to_tensor = transforms.ToTensor()
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
@@ -27,8 +34,8 @@ def detect(img_path):
     predicted_locs, predicted_scores = model(image.unsqueeze(0))
 
 
-    det_boxes, det_labels, det_scores = detect_objects(model.priors, predicted_locs, predicted_scores, 0.40, 0.45, 200, n_classes)
-    #print(len(det_labels[0]))
+    det_boxes, det_labels, det_scores = detect_objects(model.priors, predicted_locs, predicted_scores, 0.10, 0.45, 200, n_classes)
+    print(len(det_labels[0]))
 
     det_boxes = det_boxes[0].to('cpu')
 
@@ -38,6 +45,7 @@ def detect(img_path):
     det_labels = [rev_label_map[l] for l in det_labels[0].to('cpu').tolist()]
 
     if det_labels == ['background']:
+        print("only background...")
         return original_image
     
     annotated_image = original_image

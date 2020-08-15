@@ -40,7 +40,7 @@ class MultiBoxLoss(nn.Module):
             true_locs[i] = cxcy_to_gcxgcy(xy_to_cxcy(boxes[i][object_for_each_prior]), self.priors_cxcy)
         
         positive_priors = true_classes != 0     #取正样本
-        
+         
         loc_loss = self.smooth_l1(predicted_locs[positive_priors], true_locs[positive_priors])
 
         n_positives = positive_priors.sum(dim=1)

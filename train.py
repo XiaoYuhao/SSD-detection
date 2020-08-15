@@ -5,6 +5,7 @@ import torch.utils.data
 from loss import MultiBoxLoss
 from utils import *
 from SSD import SSD
+from SSD512 import SSD512
 from SSDLite import SSDLite
 import argparse
 from logger import getLogger
@@ -128,10 +129,14 @@ def main():
     best_save = configs['best_model']
     save_model = configs['save_model']
     
-    model = SSD(class_num=n_classes, backbone=backbone, device=device)
-    #model = SSDLite(class_num=n_classes, backbone=backbone, device=device)
+    if configs['net'] == 'SSD':
+        model = SSD(class_num=n_classes, backbone=backbone, device=device)
+    elif configs['net'] == 'SSD512':
+        model = SSD512(class_num=n_classes, backbone=backbone, device=device)
+    elif configs['net'] == 'SSDLite':
+        model = SSDLite(class_num=n_classes, backbone=backbone, device=device)
     if checkpoint is not None:
-        model = load_pretrained(model, checkpoint)        #加载预训练模型
+        model = load_pretrained(model, checkpoint, device=device)        #加载预训练模型
 
     data_folder = configs['data_folder']
 
@@ -153,8 +158,9 @@ def main():
             else:
                 not_biases.append(param)
                 param_names_not_biases.append(param_name)
-    optimizer = torch.optim.SGD(params=[{'params':biases,'lr': 2*lr}, {'params':not_biases}],
-                                lr=lr, momentum=momentum, weight_decay=weight_decay)
+    #optimizer = torch.optim.SGD(params=[{'params':biases,'lr': 2*lr}, {'params':not_biases}],
+    #                            lr=lr, momentum=momentum, weight_decay=weight_decay)
+    optimizer = torch.optim.Adam(params=model.parameters(), lr=lr, weight_decay=weight_decay)
     
     model = model.to(device)
     criterion = MultiBoxLoss(priors_cxcy=model.priors).to(device)

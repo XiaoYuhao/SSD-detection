@@ -68,11 +68,20 @@ mobilenet_specs = [
 
 vgg_specs = [
     SSDSpec(38, 8, SSDBoxSizes(30, 60), [2]),
-    SSDSpec(19, 32, SSDBoxSizes(60, 111), [2, 3]),
+    SSDSpec(19, 16, SSDBoxSizes(60, 111), [2, 3]),
     SSDSpec(10, 32, SSDBoxSizes(111, 162), [2, 3]),
     SSDSpec(5, 64, SSDBoxSizes(162, 213), [2, 3]),
     SSDSpec(3, 100, SSDBoxSizes(213, 264), [2]),
     SSDSpec(1, 300, SSDBoxSizes(264, 315), [2])
 ]
 
+ssd512_specs = [
+    SSDSpec(64, 8, SSDBoxSizes(52, 123), [2]),
+    SSDSpec(32, 16, SSDBoxSizes(123, 195), [2,3]),
+    SSDSpec(16, 32, SSDBoxSizes(195, 266), [2,3]),
+    SSDSpec(8, 64, SSDBoxSizes(266, 338), [2,3]),
+    SSDSpec(4, 128, SSDBoxSizes(338, 410), [2,3]),
+    SSDSpec(2, 256, SSDBoxSizes(410, 481), [2]),
+    SSDSpec(1, 512, SSDBoxSizes(481, 553), [2])
+]
 #priors = generate_ssd_priors(specs, image_size)

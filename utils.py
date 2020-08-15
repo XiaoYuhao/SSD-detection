@@ -598,7 +598,7 @@ def transform(image, boxes, labels, difficulties, split):
             new_image, new_boxes = flip(new_image, new_boxes)
 
     # Resize image to (300, 300) - this also converts absolute boundary coordinates to their fractional form
-    new_image, new_boxes = resize(new_image, new_boxes, dims=(300, 300))
+    new_image, new_boxes = resize(new_image, new_boxes, dims=configs['resize'])
 
     # Convert PIL image to Torch tensor
     new_image = FT.to_tensor(new_image)

@@ -5,6 +5,8 @@ import torch
 from priors import *
 import torch.nn.functional as F
 from SSD import SSD
+from SSD512 import SSD512
+from SSDLite import SSDLite
 import time
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -16,7 +18,12 @@ from tqdm import tqdm
 def evaluate():
     print(device)
     backbone = test_configs['backbone']
-    model = SSD(class_num=len(label_map), backbone=backbone, device=device)
+    if test_configs['net'] == 'SSD':
+        model = SSD(class_num=len(label_map), backbone=backbone, device=device)
+    elif test_configs['net'] == 'SSD512':
+        model = SSD512(class_num=len(label_map), backbone=backbone, device=device)
+    elif test_configs['net'] == 'SSDLite':
+        model = SSDLite(class_num=len(label_map), backbone=backbone, device=device)
     model = load_pretrained(model, test_configs['checkpoint'], device=device)
 
     #checkpoint = torch.load('checkpoint_ssd300.pth.tar')

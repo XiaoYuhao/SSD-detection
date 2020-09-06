@@ -3,11 +3,11 @@ data_folder = 'dataset/SeaShips'
 
 configs = dict(
     net = 'SSD512',
-    log_name = 'ssd512_vgg_seaships',
-    checkpoint = 'weights/ssd512_vgg_seaships.pth',
+    log_name = 'ssd512_vgg_voc',
+    checkpoint = None,
     batch_size = 10,
-    start_epoch = 56,
-    epochs = 100,
+    start_epoch = 0,
+    epochs = 300,
     epochs_since_improvement = 0,
     best_loss = 100.,
     num_workers = 4,
@@ -16,18 +16,18 @@ configs = dict(
     weight_decay = 0.0005,
     grad_clip = None,
     backbone = 'VGG',
-    best_model = 'weights/ssd512_vgg_seaships_best.pth',
-    save_model = 'weights/ssd512_vgg_seaships.pth',
+    best_model = 'weights/ssd512_vgg_voc_best.pth',
+    save_model = 'weights/ssd512_vgg_voc.pth',
     data_folder = data_folder,
     resize = (512, 512)
 )
 
 test_configs = dict( 
-    net = 'SSD512',
-    checkpoint = 'weights/ssd512_vgg_seaships_best.pth',
-    backbone = 'VGG',
+    net = 'SSD',
+    checkpoint = 'weights/ssd300_v2_voc_seaships.pth',
+    backbone = 'MobileNetV2',
     data_folder = data_folder,
-    resize = (512, 512)
+    resize = (300, 300)
 )
 
 if data_folder == 'dataset/voc':

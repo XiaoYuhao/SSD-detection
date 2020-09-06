@@ -15,14 +15,16 @@ n_classes = len(label_map)
 
 def detect(img_path):
     original_image = Image.open(img_path, mode='r').convert('RGB')
+    backbone = test_configs['backbone']
     if test_configs['net'] == 'SSD':
-        model = SSD(class_num=n_classes, backbone='VGG', device=device)
+        model = SSD(class_num=n_classes, backbone=backbone, device=device)
     elif test_configs['net'] == 'SSD512':
-        model = SSD512(class_num=n_classes, backbone='VGG', device=device)
+        model = SSD512(class_num=n_classes, backbone=backbone, device=device)
     elif test_configs['net'] == 'SSDLite':
-        model = SSDLite(class_num=n_classes, backbone='VGG', device=device)
+        model = SSDLite(class_num=n_classes, backbone=backbone, device=device)
     model = load_pretrained(model, test_configs['checkpoint'], device=device)
     model.to(device)
+    model.eval()
 
     resize = transforms.Resize(test_configs['resize'])
     to_tensor = transforms.ToTensor()
@@ -65,8 +67,8 @@ def detect(img_path):
 
     del draw
     
-    annotated_image.save('temp/res005.jpg')
+    annotated_image.save('temp/res004.jpg')
     return annotated_image
 
 if __name__ == '__main__':
-    detect('temp/test005.jpg')
+    detect('temp/test004.jpg')

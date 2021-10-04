@@ -14,6 +14,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 n_classes = len(label_map)
 
 def detect(img_path):
+    print(n_classes)
     original_image = Image.open(img_path, mode='r').convert('RGB')
     backbone = test_configs['backbone']
     if test_configs['net'] == 'SSD':
@@ -67,8 +68,8 @@ def detect(img_path):
 
     del draw
     
-    annotated_image.save('temp/res004.jpg')
+    annotated_image.save('temp/res001.jpg')
     return annotated_image
 
 if __name__ == '__main__':
-    detect('temp/test004.jpg')
+    detect('temp/test001.jpg')

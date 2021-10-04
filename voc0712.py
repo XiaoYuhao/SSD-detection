@@ -159,3 +159,9 @@ class PascalVOCDataset(Dataset):
         images = torch.stack(images, dim=0)
 
         return images, boxes, labels, difficulties
+    
+if __name__ == '__main__':
+    voc07_path = '../../dataset/voc/VOCdevkit/VOC2007'
+    voc12_path = '../../dataset/voc/VOCdevkit/VOC2012'
+    output_folder = '../../dataset/voc/'
+    create_data_lists(voc07_path, voc12_path, output_folder)

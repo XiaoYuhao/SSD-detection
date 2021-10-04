@@ -497,7 +497,7 @@ class SSD(nn.Module):
 
         return locs, cls_scores
 
-from thop import profile, clever_format
+#from thop import profile, clever_format
 from torchstat import stat
 
 if __name__ == '__main__':

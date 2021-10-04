@@ -203,7 +203,7 @@ class MobileNetV3_Small_Classification(nn.Module):
         x = self.features(x)
         x = self.log_softmax(x)
         return x
-
+'''
 from thop import profile, clever_format
 
 if __name__ == '__main__':
@@ -211,13 +211,13 @@ if __name__ == '__main__':
     print(model)
     image = torch.randn(2, 3, 300, 300)
     model(image)
-    '''
+    
     input = torch.randn(1, 3, 224, 224)
     flops, params = profile(model, inputs=(input,))
     flops, params = clever_format([flops, params], "%.3f")
     print(flops, params)
-    '''
-
+    
+'''
 
 '''
 MobileNetV3_Large_Classification:

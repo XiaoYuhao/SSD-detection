@@ -172,7 +172,7 @@ def evaluate():
     print(acc_num)
     print(num)
     print(acc_num/num)
-
+'''
 from thop import profile, clever_format
 
 if __name__ == '__main__':
@@ -185,7 +185,7 @@ if __name__ == '__main__':
     flops, params = profile(model, inputs=(input,))
     flops, params = clever_format([flops, params], "%.3f")
     print(flops, params)
-
+'''
 
 '''
 flops: 2.312G

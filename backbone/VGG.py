@@ -49,18 +49,17 @@ class VGG(nn.Module):
         k = self.log_softmax(k)
         #print(k)
         return k
-    
-from thop import profile, clever_format
+
 
 if __name__ == '__main__':
     model = VGG()
     print(model)
-    '''
-    input = torch.randn(1, 3, 224, 224)
-    flops, params = profile(model, inputs=(input,))
-    flops, params = clever_format([flops, params], "%.3f")
-    print(flops, params)
-    '''
+
+    offical_model = torchvision.models.vgg16()
+    print(offical_model)
+    
+
+    
 
 
     

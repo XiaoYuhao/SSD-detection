@@ -12,6 +12,7 @@ from logger import getLogger
 print(configs)
 
 from dataset import Dataset
+from coco2017 import COCODataset
 
 logger = getLogger(log_name=configs['log_name'])            #加载日志器
 
@@ -140,12 +141,14 @@ def main():
 
     data_folder = configs['data_folder']
 
-    val_dataset = Dataset(data_folder, split='test', keep_difficult=keep_difficult)
-    train_dataset = Dataset(data_folder, split='train', keep_difficult=keep_difficult)
-
+    #val_dataset = Dataset(data_folder, split='test', keep_difficult=keep_difficult)
+    #train_dataset = Dataset(data_folder, split='train', keep_difficult=keep_difficult)
+    val_dataset = COCODataset("../../dataset/coco/annotations/instances_val2017.json", "../../dataset/coco/val2017", split="TEST")
+    train_dataset = COCODataset("../../dataset/coco/annotations/instances_train2017.json", "../../dataset/coco/train2017", split="TRAIN")
+    
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=train_dataset.collate_fn, num_workers=num_workers, pin_memory=True)
     val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, collate_fn=val_dataset.collate_fn, num_workers=num_workers, pin_memory=True)
-
+    
     biases = list()
     not_biases = list()
     param_names_biases = list()

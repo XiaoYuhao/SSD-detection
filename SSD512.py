@@ -1,4 +1,5 @@
 import torch
+import torchvision
 import torch.nn as nn
 import torch.nn.functional as F
 from priors import *
@@ -391,7 +392,8 @@ class SSD512(nn.Module):
         self.priors = torch.FloatTensor(priors).to(device)
 
         if self.backbone == 'VGG':
-            self.base_net = VGG()
+            #self.base_net = VGG()
+            self.base_net = torchvision.models.vgg16(pretrained=True)
         elif self.backbone == 'MobileNetV1':
             self.conv1 = nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1, bias=False)
             self.bn1 = nn.BatchNorm2d(32)
@@ -426,9 +428,9 @@ class SSD512(nn.Module):
         if self.backbone == 'VGG':
             for index, feat in enumerate(self.base_net.features):
                 x = feat(x)
-                if index == 32:
+                if index == 22:             #my vgg 32
                     features_64x64 = x
-                elif index == 42:
+                elif index == 29:           #my vgg 42
                     break
         elif self.backbone == 'MobileNetV1':
             x = self.conv1(x)
@@ -507,7 +509,7 @@ class SSD512(nn.Module):
 
         return locs, cls_scores
 
-from thop import profile, clever_format
+#from thop import profile, clever_format
 from torchstat import stat
 
 if __name__ == '__main__':
@@ -517,7 +519,7 @@ if __name__ == '__main__':
     #    print(index)
     #    print(feat)
     '''
-    model = SSD(class_num=7, backbone='VGG', device='cpu')
+    model = SSD512(class_num=7, backbone='VGG', device='cpu')
     print(model)
     image = torch.randn(3, 3, 300, 300)
     model(image)
@@ -534,3 +536,6 @@ if __name__ == '__main__':
     
     model = SSD512(class_num=7, backbone='MobileNetV3_Small', device='cpu')
     stat(model, (3, 512, 512))
+    print(type(model))
+
+    

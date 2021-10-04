@@ -86,7 +86,7 @@ class MobileNetV2_Classification(nn.Module):
         x = self.log_softmax(x)
         return x
         
-
+'''
 from thop import profile, clever_format
 
 if __name__ == '__main__':
@@ -96,7 +96,7 @@ if __name__ == '__main__':
     flops, params = profile(model, inputs=(input,))
     flops, params = clever_format([flops, params], "%.3f")
     print(flops, params)
-
+'''
 '''
 flops: 337.235M
 params: 2.414M
